@@ -1,0 +1,203 @@
+node js is event driven architecture. 
+
+//NODE MODULES ----->
+Three kinds of modules in Node.js:
+
+Core modules: built into Node, such as fs, http, path, os, crypto, events.
+Local modules: your own files, loaded with a path like require("./utils").
+Third-party modules (packages): installed from npm, such as express, loaded with require("express").
+
+Every file in Node is treated as its own module, and you share things between files with module.exports (or export in ES Modules).
+
+cost fs = require('fs')
+
+const evenemitter = require('events')
+
+event is type of class it does not actually load like fs and os logger is also work like class.
+
+// CORS (cross origin resouce sharing)------->
+cors safely requests resources from different origin domain that the one served the webpage.
+
+origin = protocol + domain + port
+
+if server and backend are in different origin browser by default block the req made to the server. we config in server and allow oour specific 
+website that we trust so that browser doesnt block that website. 
+
+//NO-SQL DATABASE ---> 
+Not Only Sequential Database in this data type we generate our own schema to store data. it has flexible structre. 
+we can change its schema any time. query language changes any time. its scaling is horizontal genrally. 
+eg mongodb.
+
+//MONGOOSE------>
+mongoose is an onject data modelling (odm) library for node.js it act as structured interface between javascript 
+and mongodb. while mongodb is schema less but mongoose give semi rigid structure for developers.
+
+1.SCHEMA : the blueprint of our data, a mongoose schema defines what type our data is eg(string, boolean, number) and 
+making strcit validation rules.
+2.MODELS : the interface for database operation. it is a constructor funtion compiled from our schema.
+it is used to perform CRUD operation(Create, Read, Update, Delete)
+
+//MIDDLEWARES and ROUTE----->
+
+app.use() is how you register middleware in Express. Middleware is a function that runs on incoming
+requests before they reach your route handlers.
+A middleware function receives (req, res, next). It can:
+
+read or modify req and res
+end the request by sending a response
+call next() to hand off to the next function in the chain
+
+A route is a rule that says "when a request comes in with this HTTP method and this path, run this function."
+A route has three parts: the method (get, post, put, delete), the path (/users), and the handler (the function that sends the response).
+
+Router
+
+A router is a mini-app that holds a group of related routes,
+so you don't put everything in one file. It's created with express.Router().
+
+//HIGHER ORDER FUNCTION --->
+
+a higher order function is, in which the input is also a function and the output of that function is also a function.
+eg. 
+function createMultiplier(multiplier) {
+  return function(number) {
+    return number * multiplier;
+  };
+}
+
+//PRE SAVE AND POST HOOK IN MONGOOSE ----> 
+these are middleware function in mongoose.functions that intercept the execution of asynchronous database actions.
+ They allow you to execute custom logic either before an event happens (pre) or after it completes.
+The (this) Context	Refers to the document being saved(pre).	Refers to the document that was saved(post).
+
+
+//HASHING PASSWORD --->
+we hash the password with bcrypt library, after hashihng and storing it we then want to compare the saved 
+password wiht the current password given by user to do that we again hash the current password and
+compare it with the previous one.
+
+//JWT TOKEN ---->
+jwt token is an openstandard used to transmit data between client and server in json format. 
+token contain three main component HEADER, PAYLOAD, SIGNATURE comprised as xxxx.yyyyy.zzzzz.
+token is a long string. data can be anything. there are two type of token with data and without data.
+access token is stateless, in other words its copy is not stored in db.
+refresh token lives longer than access token.
+
+//TEMPORARY TOKEN ---->
+we generate it with crypto module in nodejs. it genrate longstring using sha256 algorithm.this token is used to generate refresh token which
+lives longer in db.
+
+//SENDING EMAIL IN NODEJS ----->
+we use nodemailer and mailgen to send emails. more info in docs.
+
+//USER REGISTRATION AND SAVING IT --->
+Registration : Form → Request → Validate → Check duplicate → Hash password → Save to DB → Response
+
+
+//VALIDATORS --->
+VALIDATORS are tools, libraries, functions that that validate the incoming data like api requests, userinput, form submisson. 
+so that data meet specific criteria before application process it. 
+
+• Security: Prevents bad or malicious actors from sending destructive inputs to your database or server.
+• Data Integrity: Ensures that required fields (like emails, phone numbers, or passwords)
+ adhere strictly to expected formats.
+
+//LOGIN METHOD --->
+take data from user
+validate
+if user exist
+if password is correct 
+generate tokens 
+send tokens in cookies
+send res 
+
+//WHAT ARE COOKIES ---> 
+cookies are small text file stored directly in users web browser. it store state-full info like login data,
+cart item. it is send with every http request so that backend reads itinstantly, max file size is like 4kb.
+
+//HOW WE VALIDATE ACCESS TOKEN EVERYTIME --->
+there are two ways 1st we write code in every controller or just use a single middleware which check the access token
+in between. to check like that we can use cookie or headers, since mobile phones dosnt have cookies feature we will have to use header.
+
+//DIFF BETWEEN ACCESS AND REFRESH TOKEN --->
+Request + access token → OK
+Request + expired access token → 401
+Refresh token → /refresh → new access token → retry request
+
+access token is sent to any api endpoint, refresh token is send only to specific api endpoint.
+
+
+//LOGGING OUT A USER ---> 
+1.Request comes with cookies attached(cookies store user data)
+2.Auth middleware runs first verify JWT 
+3.remove refresh token
+4.and both cookies are cleared
+Logout is an action, not a data submission. Compare it with login, which needs credentials in the body.
+
+//DIFFERENCE BETWEEN SECURE AND NORMAL ROUTE --->
+A “secure route” isn’t a special Express feature. It’s a normal route that you protect so only certain people can access it.
+The difference is whether the server checks who is asking before responding.
+
+//forgot password email --> 
+we take the email, verify it in the database and send a reset password link. with tokens.
+
+//MONGODB AGREGATION PIPELINES --->
+An aggregation pipeline in MongoDB is a multi-stage framework that processes, filters, transforms, and analyzes documents sequentially in a collection.
+
+How It Works
+
+• Sequential Stages: Documents pass through an ordered sequence of stages using db.collection.aggregate([stage1, stage2, ...]).
+• Step-by-Step Transformation: The output of one stage serves as the input for the next stage.
+• Read-Only by Default: It does not modify your original collection unless you include a $merge or $out stage at the end
+
+Core Stages
+
+• $match: Filters documents to pass only those matching specific query conditions.
+• $group: Groups documents by a specified key and applies accumulator operators like $sum, $avg, or $push.
+• $project: Reshapes documents by adding, removing, or renaming fields.
+• $sort: Reorders the incoming documents by specified fields in ascending or descending order.
+• $limit / $skip: Restricts or offsets the number of documents passed to the next stage.
+• $lookup: Performs a left outer join to a collection in the same database to combine related data.
+• $unwind: Deconstructs an array field from the input documents to output a document for each element.
+
+$lookup breif: Performs a left outer join to a collection in the same database to filter in documents from the foreign collection for processing.
+ The $lookup stage adds a new array field to each input document. 
+The new array field contains the matching documents from the foreign collection.
+ The $lookup stage passes these reshaped documents to the next stage.
+
+//WHY WE USE PIPELINES IN PROJECT controller--->
+
+User controller: simple, single-collection queries
+
+Users are usually flat documents (name, email, password hash, role). Typical operations are:
+
+User.findById(id) to fetch a profile
+User.findOne({ email }) to log in
+User.findByIdAndUpdate(...) to edit a profile
+
+These don’t need a pipeline because the data lives in one collection and goes back as stored.
+
+Project controller: data from multiple collections
+
+Projects tend to be connected to other things: owner, members, tasks, comments, and so on. A project endpoint often needs to:
+
+Join other collections ($lookup), e.g. attach full member details instead of just user IDs
+Compute values, e.g. task count, completed percentage, or total budget ($group, $addFields, $size)
+Filter or sort on joined or computed data, e.g. “projects where I’m a member, sorted by most active”
+Reshape output with $project so the client gets exactly the fields it needs
+Paginate a complex result in one database round trip
+
+//WHY WE USE MULTER --->
+Express can’t handle file uploads by itself.
+
+Browsers send files using multipart/form-data, which is a different format from JSON or normal form data. 
+Express’s built-in parsers (express.json() and express.urlencoded()) don’t understand it, so without help, 
+req.body would be empty and the file would be lost.
+
+//DIFFERENT TYPE OF EXPORTS IN JS  -->
+Named exports are imported with { } and the exact same name.
+Default export is imported without { }, and you can name it anything. There is only one per file.
+
+
+//HOW MEMEBER WILL GET THE SAME PROJECT ID ---> 
+while creating project id or say project store it in a constant and pass that to member.
